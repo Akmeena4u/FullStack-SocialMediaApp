@@ -29,6 +29,10 @@
 
  
  ### profile-page 
+ ---
+ ![image](https://github.com/Akmeena4u/FullStack-SocialMediaApp/assets/93425334/b8f2cb6c-a4ef-42c7-8ff0-0559c52a0b10)
+
+---
  profilepage - it have search bar , info bio ,who following , followers ,  logout option    
  1. profileleft.jsx -- to show effect make every class relative , it have info card  and followcard
  2. center-- profile.jsx from profilecard
