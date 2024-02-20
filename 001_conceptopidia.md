@@ -9,7 +9,12 @@
 
 
 ## componets 
+---
 ### Home
+---
+![image](https://github.com/Akmeena4u/FullStack-SocialMediaApp/assets/93425334/c4730958-3561-42d5-87e2-afb63b6b4a52)
+
+---
 1. profilecard.jsx -- add cover image and profile img from img folder and using style.css styled intial profile card                                                                                                        now i settled positions of profile img AND  name using bottom = 3rem , margin-top - 3rem respectiveely
   followercard.jsx --   here initially i designed it woth hardcore data and for all buttons of followcard or other web butttons in app.js so that  i can use them globally
 
@@ -31,9 +36,9 @@
 
 
 ### Auth-page
-
+---
 ![image](https://github.com/Akmeena4u/FullStack-SocialMediaApp/assets/93425334/872eab97-fa8a-4ecf-91a2-288ed5260d20)
-
+---
 1. leftside - it have app name and tagline
 2. rightside- created form for login and signup with buttons
 
