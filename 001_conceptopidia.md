@@ -159,6 +159,196 @@ firstly setup node project and install moomngoose ,  express ,nodemon ,
   ![image](https://github.com/Akmeena4u/FullStack-SocialMediaApp/assets/93425334/2ef8f5e8-d284-4507-bcb1-a514dbb57d26)
 
 ---  
+
+**Redux Setup Steps:**
+
+1. Navigate to the `client` folder and install the required packages using the following command:
+   ```bash
+   npm install redux redux-thunk react-redux
+   ```
+
+2. Import the `useDispatch` hook from `react-redux` for later use:
+   ```javascript
+   import { useDispatch } from 'react-redux';
+   ```
+
+3. Set up the `useDispatch` hook:
+   ```javascript
+   const dispatch = useDispatch();
+   ```
+
+4. Use the `dispatch` hook to interact with Redux actions. For example, in a form submission:
+   ```javascript
+   if (data.password === data.confirmPass) {
+       dispatch(signUpAction(data)); // dispatching the signUpAction with form data
+   } else {
+       setConfirmPassword(false);
+       dispatch(loginAction(data)); // dispatching the loginAction with form data
+   }
+   ```
+
+5. Create action files inside the `actions` folder in the `client/src` directory.
+
+6. Inside the `authActions.js` file, export and define actions such as login and signUp:
+   ```javascript
+   // authActions.js
+   export const loginAction = (formData) => {
+       return async (dispatch) => {
+           // Make API call and dispatch appropriate actions based on the result
+       };
+   };
+
+   export const signUpAction = (formData) => {
+       return async (dispatch) => {
+           // Make API call and dispatch appropriate actions based on the result
+       };
+   };
+   ```
+
+7. Create an `api` folder in the `client/src` directory.
+
+8. Inside the `api` folder, create a `request.js` file and install the `axios` package:
+   ```bash
+   npm install axios
+   ```
+
+9. Configure the `request.js` file for making API requests:
+   ```javascript
+   // request.js
+   import axios from 'axios';
+
+   const api = axios.create({
+       baseURL: 'http://localhost:5000', // Set your server's base URL
+   });
+
+   export default api;
+   ```
+
+10. Inside the `authApi.js` file (inside the `api` folder), define functions for login and signUp API requests:
+    ```javascript
+    // authApi.js
+    import api from './request';
+
+    export const login = (formData) => {
+        return api.post('/auth/login', formData);
+    };
+
+    export const signUp = (formData) => {
+        return api.post('/auth/register', formData);
+    };
+    ```
+
+11. Create a `reducers` folder in the `client/src` directory.
+
+12. Inside the `reducers` folder, create an `authReducer.js` file and define the authentication reducer:
+    ```javascript
+    // authReducer.js
+    const initialState = {
+        authData: null,
+        loading: false,
+        error: false,
+    };
+
+    const authReducer = (state = initialState, action) => {
+        switch (action.type) {
+            case 'AUTHENTICATION_START':
+                return { ...state, loading: true, error: false };
+            case 'AUTHENTICATION_SUCCESS':
+                return { ...state, authData: action.data, loading: false, error: false };
+            case 'AUTHENTICATION_FAIL':
+                return { ...state, loading: false, error: true };
+            default:
+                return state;
+        }
+    };
+
+    export default authReducer;
+    ```
+
+13. Create an `index.js` file inside the `reducers` folder to combine all reducers:
+    ```javascript
+    // index.js
+    import { combineReducers } from 'redux';
+    import authReducer from './authReducer';
+
+    const reducers = combineReducers({
+        auth: authReducer,
+        // Add other reducers here if needed
+    });
+
+    export default reducers;
+    ```
+
+14. Create a `store` folder in the `client/src` directory.
+
+15. Inside the `store` folder, create a `reduxStore.js` file for setting up the Redux store:
+    ```javascript
+    // reduxStore.js
+    import { createStore, applyMiddleware, compose } from 'redux';
+    import thunk from 'redux-thunk';
+    import reducers from '../reducers';
+
+    const saveToLocalStorage = (state) => {
+        try {
+            const serializedState = JSON.stringify(state);
+            localStorage.setItem('profile', serializedState);
+        } catch (error) {
+            console.error('Error saving to localStorage:', error);
+        }
+    };
+
+    const loadFromLocalStorage = () => {
+        try {
+            const serializedState = localStorage.getItem('profile');
+            if (serializedState === null) return undefined;
+            return JSON.parse(serializedState);
+        } catch (error) {
+            console.error('Error loading from localStorage:', error);
+            return undefined;
+        }
+    };
+
+    const persistedState = loadFromLocalStorage();
+
+    const middleware = [thunk];
+
+    const store = createStore(
+        reducers,
+        persistedState,
+        compose(
+            applyMiddleware(...middleware),
+            window.__REDUX_DEVTOOLS_EXTENSION__
+                ? window.__REDUX_DEVTOOLS_EXTENSION__()
+                : (f) => f
+        )
+    );
+
+    store.subscribe(() => saveToLocalStorage(store.getState()));
+
+    export default store;
+    ```
+
+16. Finally, integrate the Redux store with the React application in the `client/src/index.js` file:
+    ```javascript
+    // index.js
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+    import { Provider } from 'react-redux';
+    import store from './store/reduxStore';
+    import App from './App';
+
+    ReactDOM.render(
+        <Provider store={store}>
+            <App />
+        </Provider>,
+        document.getElementById('root')
+    );
+    ```
+
+These steps should guide you through setting up Redux in your React application. Ensure that you customize the API endpoints and
+reducers according to your project structure and requirements.
+
+
 </details>
 
 
