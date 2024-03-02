@@ -110,7 +110,7 @@ firstly setup node project and install moomngoose ,  express ,nodemon ,
 
 
 <details>
-<h2>  <summary>Improving Authentication Page</summary> </h2>
+ <summary>Improving Authentication Page</summary> 
 
   ### Improving Authentication Page
 
