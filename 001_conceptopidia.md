@@ -458,3 +458,48 @@ reducers according to your project structure and requirements.
 
 These notes cover the server-side implementation of JWT token generation, testing, and verification, as well as a brief mention of the next steps involving client-side routing. If you have any specific questions or need further clarification, feel free to ask!
 </details>
+
+
+<details>
+  <summary>React Router</summary>
+  ### React Router Implementation:
+
+#### Package Installation:
+1. **React Router Dom Installation:**
+   - Installed the `react-router-dom` package on the client side using `yarn add react-router-dom`.
+
+#### Client-Side Implementation:
+
+1. **Router Setup in index.js:**
+   - Imported `BrowserRouter` from `react-router-dom` in the `index.js` file.
+   - Enclosed the `Provider` component with `BrowserRouter`.
+   - Mentioned the transition from version 5 to version 6 of React Router.
+
+2. **Route Configuration in app.js:**
+   - Imported necessary classes from `react-router-dom`: `Routes`, `Route`, `Navigate`.
+   - Configured route logic in the `app.js` file.
+
+3. **Conditional Rendering based on User Authentication:**
+   - Checked user availability in the Redux store using `useSelector`.
+   - Implemented route navigation based on user availability.
+   - Used the `Navigate` class for navigation.
+   - Routes:
+      - `/`: Redirects to the home or authentication page based on user availability.
+      - `/home`: Redirects to home or authentication based on user availability.
+      - `/authentication`: Redirects to home or authentication based on user availability.
+
+4. **Manual Key Clearance for Testing:**
+   - Cleared localStorage keys manually to simulate a clean start for the application.
+
+5. **Practical Testing:**
+   - Demonstrated login functionality with the user "John" and tested route redirection.
+   - Emphasized that testing for sign-up was not shown due to the tutorial's length.
+
+#### Next Steps: Share Component Logic Implementation:
+
+1. **Share Component Logic:**
+   - Announced the intention to implement the logic for the Share component.
+   - Desired outcome: the user should be redirected to the home page after successful login or sign-up.
+
+These notes cover the implementation of React Router on the client side, including package installation, setup in `index.js`, and route configuration in `app.js`. Additionally, practical testing was demonstrated for the login functionality. The next steps involve the implementation of logic for the Share component. If you have further questions or need clarification, feel free to ask!
+</details>
