@@ -354,40 +354,65 @@ reducers according to your project structure and requirements.
 
 <details>
   <summary>Authenticating a user</summary>
-Server-Side Changes:
-Cross-Origin Issue Resolution:
 
-Encountered a "strict origin when cross-origin" error during an attempt to make a request for user registration.
-Installed the cors package using npm i cors to handle cross-origin requests.
-Configured the server in index.js to use the cors middleware.
-User Registration:
+  Certainly! Here are detailed notes based on the provided transcript:
 
-Made a request to register a new user named "John" with a username "john@gmail.com" and password "john".
-Utilized the network tab to observe the request and encountered the CORS issue.
-Resolved the CORS issue by installing and configuring the cors package on the server side.
-Password Hashing:
+### Server-Side Changes:
 
-Integrated the bcrypt library to hash passwords.
-Modified the server-side logic in the authController.js file to hash the incoming password from the request body.
-Duplicate Username Check:
+1. **Cross-Origin Issue Resolution:**
+    - Encountered a "strict origin when cross-origin" error during an attempt to make a request for user registration.
+    - Installed the `cors` package using `npm i cors` to handle cross-origin requests.
+    - Configured the server in `index.js` to use the `cors` middleware.
 
-Implemented a check to verify if the provided username already exists before attempting to register a new user.
-Used the userModel to find an existing user with the given username.
-If an existing user is found, returned a response with a 400 status and a message indicating that the username is already registered.
-UI Changes:
-Loading State in UI:
+2. **User Registration:**
+    - Made a request to register a new user named "John" with a username "john@gmail.com" and password "john".
+    - Utilized the network tab to observe the request and encountered the CORS issue.
+    - Resolved the CORS issue by installing and configuring the `cors` package on the server side.
 
-Updated the UI to display a "Loading" message when a request is pending.
-Used React Redux hooks (useDispatch and useSelector) to manage the loading state.
-Modified the UI buttons to show loading state dynamically based on the loading variable.
-Button Styling and Clickability:
+3. **Password Hashing:**
+    - Integrated the bcrypt library to hash passwords.
+    - Modified the server-side logic in the `authController.js` file to hash the incoming password from the request body.
 
-Introduced a CSS class called .button-disabled to make buttons visually distinct when disabled.
-Made buttons unclickable by setting pointer-events: none in the .button-disabled class.
-Dynamically applied the .button-disabled class to buttons based on the loading state.
-LocalStorage Verification:
+4. **Duplicate Username Check:**
+    - Implemented a check to verify if the provided username already exists before attempting to register a new user.
+    - Used the `userModel` to find an existing user with the given username.
+    - If an existing user is found, returned a response with a 400 status and a message indicating that the username is already registered.
 
-Checked the browser's localStorage to verify that user profile data is stored after a successful login or signup.
-Showed that the data stored in localStorage includes a "profile" key, which contains user information.
+### UI Changes:
+
+1. **Loading State in UI:**
+    - Updated the UI to display a "Loading" message when a request is pending.
+    - Used React Redux hooks (`useDispatch` and `useSelector`) to manage the loading state.
+    - Modified the UI buttons to show loading state dynamically based on the loading variable.
+
+2. **Button Styling and Clickability:**
+    - Introduced a CSS class called `.button-disabled` to make buttons visually distinct when disabled.
+    - Made buttons unclickable by setting `pointer-events: none` in the `.button-disabled` class.
+    - Dynamically applied the `.button-disabled` class to buttons based on the loading state.
+
+3. **LocalStorage Verification:**
+    - Checked the browser's localStorage to verify that user profile data is stored after a successful login or signup.
+    - Showed that the data stored in localStorage includes a "profile" key, which contains user information.
+
+### JWT Implementation:
+
+1. **Introduction:**
+    - Discussed the importance of implementing JSON Web Tokens (JWT) on the server side.
+
+2. **Server-Side JWT Integration:**
+    - Opened the `authController.js` file to make changes for JWT implementation.
+    - Removed unnecessary code for extracting username and password from the request body.
+
+### Testing:
+
+1. **Registration Testing:**
+    - Attempted to register a user to test the server's response.
+    - Encountered a 400 status response due to a pre-existing username, indicating that the duplicate username check is functional.
+
+2. **Issues and Resolutions:**
+    - Encountered and resolved an error related to using an undefined `password` variable in the `authController.js` file.
+    - Successfully resolved the issue, and the server ran properly.
+
+
 </details>
 
