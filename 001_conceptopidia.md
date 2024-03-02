@@ -110,7 +110,7 @@ firstly setup node project and install moomngoose ,  express ,nodemon ,
 
 
 <details>
-###  <summary>Improving Authentication Page</summary>
+<h2>  <summary>Improving Authentication Page</summary> </h2>
 
   ### Improving Authentication Page
 
@@ -148,9 +148,5 @@ firstly setup node project and install moomngoose ,  express ,nodemon ,
 #### Connecting to Backend:
 24. Prepared the setup for connecting to the backend using Redux.
 25. Introduced the concept of Redux for global state management.
-26. Mentioned the use of reducers to store states based on their types.
 
-### Conclusion:
-27. Provided a comprehensive guide for setting up Redux for state management.
-28. Assured step-by-step guidance for the upcoming backend connection process.
 </details>
