@@ -150,3 +150,16 @@ firstly setup node project and install moomngoose ,  express ,nodemon ,
 25. Introduced the concept of Redux for global state management.
 
 </details>
+
+
+<details>
+  <summary>Setting up Redux</summary>
+
+---
+  ![image](https://github.com/Akmeena4u/FullStack-SocialMediaApp/assets/93425334/2ef8f5e8-d284-4507-bcb1-a514dbb57d26)
+
+---  
+</details>
+
+
+
