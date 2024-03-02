@@ -420,7 +420,6 @@ reducers according to your project structure and requirements.
 <details>
   <summary>JWT setup</summary>
 
-  Certainly! Here are detailed notes based on the provided transcript:
 
 ### Server-Side JWT Implementation:
 
@@ -455,14 +454,7 @@ reducers according to your project structure and requirements.
     - Verified the generated token by testing the login functionality with an existing user (e.g., "John").
     - Received a response with the user data and token, indicating successful JWT token authentication.
 
-### Next Steps: Routing Implementation on the Client Side:
 
-1. **Routing Discussion:**
-    - Mentioned the need to implement client-side routing for further application development.
-    - Recognized the importance of navigating between different views in a single-page application (SPA).
-
-2. **Task Ahead:**
-    - Indicated that the next task involves implementing client-side routing.
 
 These notes cover the server-side implementation of JWT token generation, testing, and verification, as well as a brief mention of the next steps involving client-side routing. If you have any specific questions or need further clarification, feel free to ask!
 </details>
