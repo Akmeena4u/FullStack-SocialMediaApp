@@ -93,3 +93,64 @@ firstly setup node project and install moomngoose ,  express ,nodemon ,
 
   ---     
 
+---
+
+#Intergration of frontend and Backend
+
+## Introduction:
+    Overview of completing a social media application using a full-stack approach. Previous completion of the design and REST API for the platform.
+
+## Goals for the Current Session:
+    1. Integration of server and client-side.
+    2. Learning client-side routing using React Router version 6.
+    3. Implementing global state management with React Redux store.
+    4. Bonus: Persisting store state even after page refresh.
+    5. Authentication with JWT authentication tokens.
+    6. Using Redux Thunk middleware for asynchronous actions.
+
+
+<details>
+###  <summary>Improving Authentication Page</summary>
+
+  ### Improving Authentication Page
+
+#### Setting Up Client-side:
+1. Created a "client" folder for the frontend.
+2. Initialized the client-side using `yarn start`.
+3. Concurrently ran the server-side using `npm start`.
+4. Opened VS Code and navigated to the "pages" directory.
+5. Modified the login and signup components in the "or.jsx" file.
+6. Removed the login function and utilized the signup component.
+7. Structured the layout with a comment to distinguish between the left and right sides.
+8. Implemented conditional rendering using the `useState` hook for login and signup forms.
+9. Created a button to switch between login and signup forms based on user interaction.
+10. Styled the clickable text with a pointer cursor.
+
+#### Handling Form Inputs:
+11. Initialized a `data` state with the `useState` hook to store input values.
+12. Created a `handleChange` function to update the `data` state on input changes.
+13. Applied the `handleChange` function to all input fields using the `onChange` attribute.
+14. Changed the input type for password fields to "password" for security.
+
+#### Confirming Passwords:
+15. Added a `confirmPass` state to manage whether the confirmed password is valid.
+16. Conditionally rendered an error message if the confirmed password doesn't match.
+17. Styled the error message with a red color, font size, and margin.
+18. Ensured the error message is displayed only when `confirmPass` is false.
+
+#### Handling Form Submission:
+19. Implemented a `handleSubmit` function to prevent default form submission.
+20. Checked if the form is in signup mode and verified if the password matches the confirmed password.
+21. Updated the `confirmPass` state accordingly.
+22. Created a `resetForm` function to reset form values and clear error messages.
+23. Called `resetForm` during the switch between login and signup modes.
+
+#### Connecting to Backend:
+24. Prepared the setup for connecting to the backend using Redux.
+25. Introduced the concept of Redux for global state management.
+26. Mentioned the use of reducers to store states based on their types.
+
+### Conclusion:
+27. Provided a comprehensive guide for setting up Redux for state management.
+28. Assured step-by-step guidance for the upcoming backend connection process.
+</details>
