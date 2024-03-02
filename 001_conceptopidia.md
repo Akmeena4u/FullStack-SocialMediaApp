@@ -416,3 +416,53 @@ reducers according to your project structure and requirements.
 
 </details>
 
+
+<details>
+  <summary>JWT setup</summary>
+
+  Certainly! Here are detailed notes based on the provided transcript:
+
+### Server-Side JWT Implementation:
+
+1. **Package Installation:**
+    - Installed the `jsonwebtoken` package on the server side using `npm i jsonwebtoken`.
+
+2. **JWT Token Generation (User Registration):**
+    - After saving a new user, implemented JWT token generation.
+    - Used the `jsonwebtoken` library's `sign` method.
+    - Created a token using the user's username and id, with a predefined secret key and expiration time (1 hour).
+    - Stored the secret key in the server's `.env` file to keep it secure.
+
+3. **Response with Token and User Data:**
+    - Sent a response containing the new user data and the generated token.
+    - Stored the token and user data in both localStorage and the Redux store.
+
+### Client-Side Implementation:
+
+1. **Registration Testing:**
+    - Tested registration by signing up with a new user (e.g., "Eric").
+    - Received a response with the new user data and an associated token.
+
+2. **Redux Store Update:**
+    - Checked the Redux store's authentication data, which now includes the user data and token after successful registration.
+
+3. **Login Route Implementation:**
+    - Implemented a login route in the server to handle login requests.
+    - If the password decryption is not valid, responded with a 400 status and the message "Wrong password."
+    - If valid, responded with a 200 status and sent the user data and token in the response JSON.
+
+4. **Token Verification:**
+    - Verified the generated token by testing the login functionality with an existing user (e.g., "John").
+    - Received a response with the user data and token, indicating successful JWT token authentication.
+
+### Next Steps: Routing Implementation on the Client Side:
+
+1. **Routing Discussion:**
+    - Mentioned the need to implement client-side routing for further application development.
+    - Recognized the importance of navigating between different views in a single-page application (SPA).
+
+2. **Task Ahead:**
+    - Indicated that the next task involves implementing client-side routing.
+
+These notes cover the server-side implementation of JWT token generation, testing, and verification, as well as a brief mention of the next steps involving client-side routing. If you have any specific questions or need further clarification, feel free to ask!
+</details>
