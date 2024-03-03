@@ -503,3 +503,154 @@ These notes cover the server-side implementation of JWT token generation, testin
 
 These notes cover the implementation of React Router on the client side, including package installation, setup in `index.js`, and route configuration in `app.js`. Additionally, practical testing was demonstrated for the login functionality. The next steps involve the implementation of logic for the Share component. If you have further questions or need clarification, feel free to ask!
 </details>
+
+
+
+<details>
+  <summary>Share post setup</summary>
+
+steps:
+
+Adjusting the image state in the post component.
+Handling the submit functionality for uploading a new post.
+Creating a new post object with user id, description, and image data.
+Uploading the image to the server using an action and middleware.
+Creating an API endpoint on the server for handling image uploads.
+Dispatching actions for success and failure of image upload.
+Implementing a reducer for managing the post state.
+Handling loading and error states in the UI during post upload.
+Creating a reset function to clear input fields after a successful post upload.
+The next steps mentioned include fetching timeline posts based on followers and displaying both the user's posts and those of their followers.
+
+### Image State Adjustment:
+In the script, the first modification is made to the state handling the image in the post component. Instead of creating an object with a `url` property, the `url` is directly assigned to the `image` property of the state. This change simplifies the structure.
+
+```jsx
+const [image, setImage] = useState(null);
+
+// ...
+
+// Inside the JSX
+<img src={image} alt="Preview" />
+
+// ...
+
+// Handling image selection
+const handleImageChange = (event) => {
+  const selectedImage = event.target.files[0];
+  setImage(URL.createObjectURL(selectedImage));
+};
+```
+
+### Submit Functionality:
+A new function named `handleSubmit` is created to handle the submission of a new post. It retrieves the user's ID and description, checks if an image is selected, and creates a `FormData` object for uploading the image to the server.
+
+```jsx
+const handleSubmit = async (event) => {
+  event.preventDefault();
+
+  const userId = useSelector((state) => state.authentication.authData.user.id);
+  const description = descriptionRef.current.value;
+  
+  if (image) {
+    const data = new FormData();
+    const fileName = new Date().toISOString() + selectedImage.name;
+    data.append('file', selectedImage, fileName);
+    // ... (dispatch action to upload image to server)
+  }
+
+  // ... (dispatch action to upload post data to server)
+};
+```
+
+### Uploading Image:
+An action `uploadImage` is dispatched with the image data using Redux Thunk middleware. This action utilizes the `axios` library to send a POST request to the server's upload endpoint.
+
+```jsx
+// Action Creator (uploadActions.js)
+export const uploadImage = (data) => async (dispatch) => {
+  try {
+    await uploadApi.uploadImage(data);
+    // ... (dispatch action for successful image upload)
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// API Call (uploadApi.js)
+export const uploadImage = (data) => api.post('/upload', data);
+```
+
+### Server-Side Handling:
+The server-side code includes setting up a route `/upload` to handle image uploads. It utilizes the `multer` middleware to process and save uploaded images in the `public/images` directory. The image's filename is based on the current date and time.
+
+```javascript
+// Server-Side Route (uploadRoute.js)
+const upload = multer({ dest: 'public/images/' });
+
+router.post('/upload', upload.single('file'), (req, res) => {
+  // ... (handling the uploaded file, e.g., saving in the database)
+  res.status(201).json({ message: 'File uploaded successfully' });
+});
+```
+
+### Uploading Post Data:
+Another action `uploadPost` is dispatched after successful image upload to handle the creation of a new post on the server. The server-side code returns the newly created post.
+
+```jsx
+// Action Creator (uploadActions.js)
+export const uploadPost = (data) => async (dispatch) => {
+  try {
+    const newPost = await uploadApi.uploadPost(data);
+    dispatch({ type: 'UPLOAD_SUCCESS', data: newPost });
+  } catch (error) {
+    console.error(error);
+    dispatch({ type: 'UPLOAD_FAIL' });
+  }
+};
+```
+
+### Post Reducer:
+A reducer `postReducer` is implemented to manage the state related to post uploads. It handles actions for upload success, upload fail, and the initial state.
+
+```jsx
+// Post Reducer (postReducer.js)
+const postReducer = (state = { posts: null, loading: false, error: false, uploading: false }, action) => {
+  switch (action.type) {
+    case 'UPLOAD_SUCCESS':
+      return { ...state, uploading: true };
+    case 'UPLOAD_FAIL':
+      return { ...state, uploading: false, error: true };
+    // ... (other cases for managing posts)
+    default:
+      return state;
+  }
+};
+```
+
+### UI Integration:
+In the UI, the loading state is used to dynamically change the button text to 'Uploading...' and disable the button during the upload process. Additionally, a `reset` function is implemented to clear the image and description fields after a successful post upload.
+
+```jsx
+const loading = useSelector((state) => state.postReducer.uploading);
+
+<button type="submit" disabled={loading}>
+  {loading ? 'Uploading...' : 'Share'}
+</button>
+
+// ...
+
+const reset = () => {
+  setImage(null);
+  descriptionRef.current.value = '';
+};
+
+// Called after successful post upload
+reset();
+```
+
+### Timeline Posts:
+The script mentions the next steps, including fetching timeline posts based on followers and displaying both the user's posts and those of their followers. However, the details for this part are not provided in the provided script.
+
+If you have any specific questions or if there's a particular part you'd like more clarification on, feel free to let me know!
+</details>
