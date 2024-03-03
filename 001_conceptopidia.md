@@ -1431,3 +1431,101 @@ const Post = () => {
 ### 12. **Note:**
    - The detailed explanations and provided code snippets are intended to guide through the development process and highlight important aspects of the implementation.
 </details>
+
+<details>
+  <summary>JWT middleware</summary>
+
+  
+
+### 1. **Setting up Authentication Middleware:**
+   - A new folder named `middleware` is created in the server directory.
+   - Inside this folder, a file named `authMiddleware.js` is created to handle JWT authentication.
+
+```javascript
+// middleware/authMiddleware.js
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
+const authMiddleware = (req, res, next) => {
+  try {
+    // Extracting token from the authorization header
+    const token = req.headers.authorization.split(' ')[1];
+    
+    // Verifying the token using the secret key
+    const decodedData = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Updating request body with the user id from the decoded token
+    req.body.id = decodedData.id;
+
+    // Proceeding to the next middleware or route
+    next();
+  } catch (error) {
+    console.error(error);
+    res.status(403).json({ message: 'Authentication failed.' });
+  }
+};
+
+module.exports = authMiddleware;
+```
+
+### 2. **Implementing Middleware in User Routes:**
+   - The `authMiddleware` is imported into the `userRoutes.js` file to protect routes that require authentication.
+
+```javascript
+// routes/userRoutes.js
+const authMiddleware = require('../middleware/authMiddleware');
+
+// Applying middleware to routes that require authentication
+router.put('/update/:id', authMiddleware, updateUser);
+router.delete('/delete/:id', authMiddleware, deleteUser);
+router.put('/follow/:id', authMiddleware, followUser);
+router.put('/unfollow/:id', authMiddleware, unfollowUser);
+```
+
+### 3. **Client-Side Authorization Header:**
+   - The client-side API requests are updated to include the authorization header if a user is logged in.
+   - The token is retrieved from local storage and added to the headers.
+
+```javascript
+// api/request.js
+api.interceptors.request.use((request) => {
+  if (localStorage.getItem('profile')) {
+    request.headers.authorization = `Bearer ${JSON.parse(localStorage.getItem('profile')).token}`;
+  }
+  return request;
+});
+```
+
+### 4. **JWT Key Configuration:**
+   - The JWT key is fetched from the environment variables using `dotenv` for additional security.
+
+```javascript
+// middleware/authMiddleware.js
+require('dotenv').config();
+const jwtKey = process.env.JWT_SECRET;
+```
+
+### 5. **Authentication Middleware Usage:**
+   - The authentication middleware is used in routes that require user authentication.
+   - If the token is valid, the user's ID is added to the request body, and the route proceeds.
+
+### 6. **Error Handling:**
+   - If authentication fails, a 403 Forbidden status is sent along with an error message.
+
+### 7. **Testing and Debugging:**
+   - The developer clears console logs and refreshes the application to test the implemented functionality.
+   - Debugging involves checking for errors, ensuring the correct placement of code, and fixing any issues.
+
+### 8. **Conclusion and User Interaction:**
+   - The tutorial concludes with a reminder to subscribe and share. Users are encouraged to provide feedback and suggest future projects.
+
+### 9. **Closing Remarks:**
+   - The social media application's development is considered complete.
+   - Viewers are encouraged to like the video, subscribe to the channel, and share their thoughts for future projects.
+
+### 10. **Additional Notes:**
+   - The `jsonwebtoken` library is used for JWT-related functionalities.
+   - The developer emphasizes the importance of returning the `request` object in the interceptor and clarifies the need for `json.parse` when retrieving the token from local storage.
+
+These detailed notes provide an overview of the key points covered in the tutorial transcript, including code snippets and explanations.
+</details>
