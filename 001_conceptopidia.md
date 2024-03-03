@@ -1096,3 +1096,179 @@ The `ProfilePage` component maps through user posts and displays them.
 
 These detailed explanations provide a clearer understanding of each code snippet's purpose and functionality.
 </details>
+
+
+<details>
+  <summary>Info card setup</summary>
+
+  Certainly, let's dive deeper into the provided code snippets and explanations.
+
+### 1. **Profile Info Card Update:**
+
+#### `InfoCard.jsx`
+
+This component is designed to display user information dynamically, either for the logged-in user or for other users when viewing their profiles. The `useEffect` hook fetches the relevant user data based on the `userId` prop, and the `profileUser` state is updated accordingly.
+
+```jsx
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { getUser } from '../api/userRequest';
+import { updateProfile } from '../actions/userAction';
+
+const InfoCard = ({ userId }) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.authReducer.authData);
+  const [profileUser, setProfileUser] = useState(null);
+
+  useEffect(() => {
+    const fetchProfileUser = async () => {
+      if (userId === user._id) {
+        setProfileUser(user);
+      } else {
+        try {
+          const response = await getUser(userId);
+          setProfileUser(response.data);
+        } catch (error) {
+          console.error('Error fetching user data:', error.message);
+        }
+      }
+    };
+
+    fetchProfileUser();
+  }, [user, userId]);
+
+  return (
+    <div className="info-card">
+      {user._id === userId && (
+        <div>
+          <h3>Status: {profileUser.relationshipStatus}</h3>
+          <p>Lives in: {profileUser.livesIn}</p>
+          <p>Works at: {profileUser.worksAt}</p>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
+      )}
+    </div>
+  );
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+};
+
+export default InfoCard;
+```
+
+Here's a breakdown of the key points:
+
+- The component uses Redux hooks (`useSelector` and `useDispatch`) to access the global user data and dispatch actions.
+- The `useEffect` hook fetches the profile user data based on the `userId` prop.
+- The UI is conditionally rendered, displaying information only if the profile being viewed belongs to the logged-in user.
+- A logout button triggers the `handleLogout` function, dispatching a `logout` action.
+
+### 2. **Redux Actions for User Update:**
+
+#### `userAction.js`
+
+This file contains the Redux actions related to user profile updates. The `updateProfile` action is an asynchronous function that handles fetching the current user data, updating the user data on the server, and dispatching relevant actions.
+
+```jsx
+import { getUser, updateUser } from '../api/userRequest';
+
+export const updateProfile = (userId, formData) => async (dispatch) => {
+  dispatch({ type: 'UPDATING_START' });
+
+  try {
+    const userResponse = await getUser(userId);
+    const response = await updateUser(userId, formData);
+
+    dispatch({ type: 'UPDATING_SUCCESS', data: response.data });
+    localStorage.setItem('profile', JSON.stringify(response.data));
+
+  } catch (error) {
+    console.error('Error updating user profile:', error.message);
+    dispatch({ type: 'UPDATING_FAIL' });
+  }
+};
+```
+
+Key points:
+
+- The `updateProfile` action is dispatched when a user updates their profile.
+- It fetches the current user data for reference and dispatches an action indicating the update process has started (`UPDATING_START`).
+- Upon successful update, it dispatches a success action (`UPDATING_SUCCESS`) with the updated user data.
+- If an error occurs during the update, it dispatches a failure action (`UPDATING_FAIL`).
+
+### 3. **Redux Reducer for User Update:**
+
+#### `authReducer.js`
+
+The Redux reducer manages the state related to user authentication and profile updates. It handles actions like `UPDATING_START`, `UPDATING_SUCCESS`, and `UPDATING_FAIL`.
+
+```jsx
+const authReducer = (state = { authData: null, loading: false, error: false }, action) => {
+  switch (action.type) {
+    // Existing cases...
+
+    case 'UPDATING_START':
+      return { ...state, loading: true, error: false };
+
+    case 'UPDATING_SUCCESS':
+      return { ...state, authData: action.data, loading: false, error: false };
+
+    case 'UPDATING_FAIL':
+      return { ...state, loading: false, error: true };
+
+    default:
+      return state;
+  }
+};
+
+export default authReducer;
+```
+
+Highlights:
+
+- New cases (`UPDATING_START`, `UPDATING_SUCCESS`, `UPDATING_FAIL`) are added to handle user profile updates.
+- The reducer maintains loading and error states during the update process.
+- Upon a successful update, the `authData` is updated with the new user data.
+
+### 4. **User API Requests:**
+
+#### `userRequest.js`
+
+This file contains API requests related to user data. It includes functions to fetch user data and update user information on the server.
+
+```jsx
+import api from './api';
+
+export const getUser = async (userId) => {
+  return await api.get(`/user/${userId}`);
+};
+
+export const updateUser = async (userId, formData) => {
+  return await api.put(`/user/${userId}`, formData);
+};
+```
+
+Key points:
+
+- `getUser` fetches user data based on the provided `userId`.
+- `updateUser` sends a PUT request to update user information on the server.
+
+### 5. **Additional Notes:**
+
+- Proper error handling is implemented to manage failures during API requests.
+- Local storage is updated with the new user data after a successful profile update.
+- The `logout` action is dispatched when the user clicks the logout button.
+
+### 6. **Styling Adjustments:**
+
+Styling details are not explicitly mentioned in the provided code. The components can be styled according to design requirements.
+
+### 7. **Testing and Debugging:**
+
+- Thorough testing and debugging are crucial for ensuring the correct functioning of components and Redux actions.
+- Identifying and resolving small errors, as demonstrated in the provided transcript, is a part of the development process.
+
+This implementation enhances the user profile experience by introducing dynamic updates, utilizing Redux for state management, and interacting with the server for user data updates.
+</details>
