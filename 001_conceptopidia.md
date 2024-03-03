@@ -890,3 +890,209 @@ The script hints at additional work, such as fixing the profile card for the hom
 
 This script mainly focuses on implementing the like/unlike functionality for a post in a React-Redux application, involving both client-side and server-side modifications.
 </details>
+
+
+<details>
+  <summary>Profilecard setup</summary>
+  Certainly, let's go through the provided script with more detailed code explanations.
+
+### 1. **Profile Card Setup on Home Page:**
+The `ProfileCard` component is designed to display user information, with different content based on its location (whether it's on the profile page or the home page). Here's a detailed breakdown:
+
+```jsx
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+
+const ProfileCard = ({ location }) => {
+  // Extracting user data from the Redux store
+  const user = useSelector(state => state.authReducer.authData);
+
+  // Constructing image URLs for cover and profile pictures
+  const coverImage = user.coverPicture ?
+    `${process.env.REACT_APP_SERVER_PUBLIC}${user.coverPicture}` :
+    `${process.env.REACT_APP_SERVER_PUBLIC}default-cover.jpg`;
+
+  const profileImage = user.profilePicture ?
+    `${process.env.REACT_APP_SERVER_PUBLIC}${user.profilePicture}` :
+    `${process.env.REACT_APP_SERVER_PUBLIC}default-profile.png`;
+
+  // JSX for displaying user information
+  return (
+    <div className="profile-card">
+      {location === 'profilePage' ? (
+        // Content for the profile page
+        <div>
+          <img src={coverImage} alt="Cover" className="cover-image" />
+          <img src={profileImage} alt="Profile" className="profile-image" />
+          <h2>{`${user.firstName} ${user.lastName}`}</h2>
+          <p>{user.worksAt || 'Write about yourself'}</p>
+          <p>Followers: {user.followers.length}</p>
+          <p>Following: {user.following.length}</p>
+          {/* Add other profile-related information here */}
+        </div>
+      ) : (
+        // Content for the home page
+        <div>
+          {/* Customize content as needed for the home page */}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ProfileCard;
+```
+
+### 2. **Dynamic User Data Extraction:**
+This code snippet represents a simplified version of the Redux store responsible for handling user authentication data.
+
+```jsx
+// Redux store slice for user authentication data
+const authReducer = (state = { authData: null }, action) => {
+  // Handle authentication-related actions
+  // ...
+};
+
+export default authReducer;
+```
+
+### 3. **Display User Information:**
+Within the `ProfileCard` component, user information such as name, workplace, and follower counts are displayed dynamically.
+
+```jsx
+{/* Displaying user information */}
+<h2>{`${user.firstName} ${user.lastName}`}</h2>
+<p>{user.worksAt || 'Write about yourself'}</p>
+<p>Followers: {user.followers.length}</p>
+<p>Following: {user.following.length}</p>
+```
+
+### 4. **Styling Adjustments:**
+This CSS snippet ensures that the styling for `.nav-icons` and `.link` is consistent.
+
+```css
+/* Styling for nav-icons and link within the profile card */
+.nav-icons, .link {
+  text-decoration: none;
+  color: inherit;
+}
+```
+
+### 5. **Navigation to Profile Page:**
+A link is wrapped around "My Profile" to enable navigation to the user's profile page.
+
+```jsx
+<span className="link">
+  <Link to={`/profile/${user.id}`}>My Profile</Link>
+</span>
+```
+
+### 6. **Routing Setup for Profile Page:**
+In `App.js`, a route is defined to handle navigation to profile pages based on user IDs.
+
+```jsx
+// Routing setup for profile pages
+<Route path="/profile/:id" exact component={ProfilePage} />
+```
+
+### 7. **Navigation to Home Page:**
+In the `HomeVideo` component, an image is wrapped in a `Link` component to enable navigation to the home page.
+
+```jsx
+{/* Navigation to the Home page */}
+<Link to="/home">
+  <img src={homeImage} alt="Home" className="home-image" />
+</Link>
+```
+
+### 8. **Post Filtering for Profile Card:**
+This code snippet filters the number of posts dynamically based on the user's ID.
+
+```jsx
+// Extracting posts from the Redux store
+const posts = useSelector(state => state.postReducer.posts);
+
+// Dynamic number of posts based on the user's ID
+const numberOfPosts = posts.filter(post => post.userId === user.id).length;
+```
+
+### 9. **Dynamic Number of Posts:**
+The dynamic number of posts is displayed within the `ProfileCard` component.
+
+```jsx
+{/* Displaying the dynamic number of posts */}
+<p>Posts: {numberOfPosts}</p>
+```
+
+### 10. **Test with New Post:**
+This section demonstrates the creation of a new post for testing purposes.
+
+```jsx
+// Creating a new post for testing
+const newPost = {
+  title: 'REST API Tutorial',
+  content: 'Learn the basics of REST API development.',
+};
+
+// Dispatching the action to add the new post
+dispatch(addPost(newPost));
+```
+
+### 11. **Post Display on Profile Page:**
+In the `ProfilePage` component, user posts are filtered and displayed on the profile page.
+
+```jsx
+// Extracting user data and posts from the Redux store
+const user = useSelector(state => state.authReducer.authData);
+const posts = useSelector(state => state.postReducer.posts);
+
+// Filtering posts based on the user's ID
+const userPosts = posts.filter(post => post.userId === user.id);
+```
+
+### 12. **Profile Card Logic for Different Pages:**
+The `ProfileCard` component renders different content based on its location prop.
+
+```jsx
+// Conditional rendering based on the location prop
+{location === 'profilePage' ? (
+  // Content for the profile page
+  // ...
+) : (
+  // Content for the home page
+  // ...
+)}
+```
+
+### 13. **Additional Notes:**
+A note regarding potential internet connection issues is included.
+
+```jsx
+// Note on potential internet connection issues
+// ...
+```
+
+### 14. **Post API Tutorial:**
+The `addPost` function in the post API file demonstrates how to make a request to add a new post.
+
+```jsx
+// Making a request to add a new post
+const addPost = async (newPost) => {
+  // ...
+};
+```
+
+### 15. **Post Display on Profile Page:**
+The `ProfilePage` component maps through user posts and displays them.
+
+```jsx
+{/* Displaying user's posts on the profile page */}
+{userPosts.map(post => (
+  // Displaying post details
+  // ...
+))}
+```
+
+These detailed explanations provide a clearer understanding of each code snippet's purpose and functionality.
+</details>
