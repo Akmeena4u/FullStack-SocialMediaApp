@@ -772,3 +772,121 @@ return (
 
 
 </details>
+
+
+<details>
+  <summary>Like a Post</summary>
+
+  Certainly, let's elaborate on the provided script:
+
+### 1. **Initializing Like State in the Post Component:**
+
+In the `post.jsx` component, a `useState` hook is used to manage the like-related state variables:
+
+```jsx
+import React, { useState } from 'react';
+
+// ...
+
+const Post = ({ data }) => {
+  // ...
+  const [liked, setLiked] = useState(data.likes.includes(user.id));
+  const [likes, setLikes] = useState(data.likes.length);
+  
+  // ...
+};
+```
+
+Here, `liked` represents whether the current user has liked the post, and `likes` represents the total number of likes on the post.
+
+### 2. **Rendering Like Button and Cursor Styling:**
+
+The JSX is modified to include a like button. The styling is adjusted to change the cursor to a pointer when hovering over the like button.
+
+```jsx
+return (
+  <div>
+    {/* ... other post details ... */}
+    <button onClick={handleLike} style={{ cursor: 'pointer' }}>
+      {liked ? 'Unlike' : 'Like'}
+    </button>
+    <p>{likes} {likes === 1 ? 'like' : 'likes'}</p>
+  </div>
+);
+```
+
+The button text dynamically changes based on whether the post is liked or not.
+
+### 3. **Handling Like Functionality:**
+
+The `handleLike` function toggles the like state and sends a request to the server to like or unlike the post.
+
+```jsx
+const handleLike = async () => {
+  try {
+    setLiked((prev) => !prev);
+    const response = await postApi.likePost(data.id, user.id);
+    
+    if (response.data.liked) {
+      setLikes((prev) => prev + 1);
+    } else {
+      setLikes((prev) => prev - 1);
+    }
+  } catch (error) {
+    console.error('Error liking/unliking post:', error);
+  }
+};
+```
+
+This function first toggles the `liked` state locally, then sends a request to the server using `postApi.likePost`. Depending on the server's response, it updates the total number of likes (`likes` state).
+
+### 4. **Implementing the Like Post API Request:**
+
+In the `postApi.js` file, the `likePost` method is added to handle the API request for liking or unliking a post.
+
+```jsx
+// postApi.js
+
+export const likePost = (postId, userId) => api.put(`/post/${postId}/like/${userId}`);
+```
+
+This method sends a PUT request to the server, specifying the post ID and user ID in the URL.
+
+### 5. **Server-Side Handling for Liking/Unliking a Post:**
+
+On the server side, a new route is implemented in the `postController.js` file to handle liking or unliking a post.
+
+```javascript
+// postController.js
+
+const likePost = async (req, res) => {
+  try {
+    // Logic to like/unlike the post based on post ID and user ID
+    // ...
+
+    res.status(200).json({ liked: /* true/false based on like status */ });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+module.exports = { likePost };
+```
+
+The logic inside `likePost` would typically involve updating the post in the database based on the current like status.
+
+### 6. **Visual Feedback on Like/Unlike:**
+
+The code provides visual feedback when a post is liked or unliked by updating the local state and the total like count accordingly.
+
+### 7. **Testing the Like/Unlike Functionality:**
+
+The functionality is tested by clicking the like button, observing the local state changes, and verifying the server's response through console logs.
+
+### 8. **Next Steps:**
+
+The script hints at additional work, such as fixing the profile card for the home page, but the details of these tasks are not provided in the given script.
+
+This script mainly focuses on implementing the like/unlike functionality for a post in a React-Redux application, involving both client-side and server-side modifications.
+</details>
