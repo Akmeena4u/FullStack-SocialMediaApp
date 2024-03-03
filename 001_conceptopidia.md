@@ -654,3 +654,121 @@ The script mentions the next steps, including fetching timeline posts based on f
 
 If you have any specific questions or if there's a particular part you'd like more clarification on, feel free to let me know!
 </details>
+
+<details>
+  <summary>Timeline post setup</summary>
+
+  Certainly! Let's break down the process in more detail:
+
+### 1. Fetching User and Posts:
+
+In the `post.jsx` component, the `useSelector` hook from React-Redux is employed to fetch the user, posts, and loading status from the global state.
+
+```jsx
+import { useSelector } from 'react-redux';
+
+// ...
+
+const user = useSelector((state) => state.authReducer.authData.user);
+const posts = useSelector((state) => state.postReducer.posts);
+const loading = useSelector((state) => state.postReducer.loading);
+```
+
+Here, `user` holds the information about the currently logged-in user, `posts` stores an array of posts, and `loading` indicates whether the posts are still being fetched.
+
+### 2. Fetching Timeline Posts:
+
+A `useEffect` hook is used to trigger the fetching of timeline posts when the component mounts. It dispatches the `getTimelinePosts` action, which is responsible for fetching posts based on the user's ID.
+
+```jsx
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { getTimelinePosts } from '../actions/postActions';
+
+// ...
+
+const dispatch = useDispatch();
+
+useEffect(() => {
+  dispatch(getTimelinePosts(user?.id));
+}, [dispatch, user]);
+```
+
+### 3. Action for Fetching Timeline Posts:
+
+In the `postActions.js` file, the `getTimelinePosts` action is created. This action dispatches actions indicating the start of fetching, successful fetching, and failure in case of an error.
+
+```jsx
+// postActions.js
+
+export const getTimelinePosts = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: 'FETCH_TIMELINE_POSTS_START' });
+    const data = await postApi.getTimelinePosts(id);
+    dispatch({ type: 'FETCH_TIMELINE_POSTS_SUCCESS', payload: data });
+  } catch (error) {
+    console.error(error);
+    dispatch({ type: 'FETCH_TIMELINE_POSTS_FAIL' });
+  }
+};
+```
+
+### 4. API Request for Fetching Timeline Posts:
+
+In the `postApi.js` file, a `getTimelinePosts` method is implemented to send a GET request to the server's endpoint for fetching timeline posts.
+
+```jsx
+// postApi.js
+
+export const getTimelinePosts = (id) => api.get(`/post/timeline/${id}`);
+```
+
+### 5. Server-Side Handling for Fetching Timeline Posts:
+
+On the server side, in the `postController.js` file, a new route is implemented for fetching timeline posts based on the user's ID.
+
+```javascript
+// postController.js
+
+const getTimelinePosts = async (req, res) => {
+  try {
+    // Logic to fetch timeline posts based on user ID
+    // ...
+
+    res.status(200).json({ timelinePosts: /* posts data */ });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+module.exports = { getTimelinePosts };
+```
+
+This is where you would implement the logic to fetch posts based on the user's ID. The fetched posts are then sent as a JSON response.
+
+### 6. Displaying Timeline Posts:
+
+In the JSX of the `post.jsx` component, the `map` function is used to iterate over the `posts` array and render each post.
+
+```jsx
+// post.jsx
+
+return (
+  <div>
+    {loading ? (
+      <p>Fetching posts...</p>
+    ) : (
+      posts.map((post) => (
+        // Render each post with necessary details
+        // ...
+      ))
+    )}
+  </div>
+);
+```
+
+### 7. Handling Likes and Dislikes:
+
+
+</details>
