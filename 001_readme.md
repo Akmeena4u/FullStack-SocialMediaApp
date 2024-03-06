@@ -1836,3 +1836,346 @@ npm install react react-dom socket.io-client
 
 This is a basic example, and you can extend it by adding more React components, implementing features like user authentication, or improving the overall user experience.
 </details>
+
+<details>
+  <summary>Socket IO </summary>
+
+1. **Socket.IO Introduction:**
+   - Socket.IO is used to create a custom server that provides real-time communication.
+   - It is not directly related to databases; it serves as middleware to inform users in real-time about actions.
+   - Socket.IO allows communication between users and provides a way to notify users of real-time events.
+
+2. **Setting Up Socket.IO Server:**
+   - Create a new folder, e.g., "socket," and initialize it with `npm init`.
+   - Install necessary dependencies: `socket.io` and `nodemon`.
+   - Create an `index.js` file for the Socket.IO server.
+   - Initialize Socket.IO with a specific port (e.g., 8800) and define a CORS origin (e.g., localhost:3000).
+   - Maintain an array (`active users`) to keep track of users connected to the socket server.
+
+3. **Handling User Connections:**
+   - Use `io.on('connection', (socket) => {...})` to handle user connections.
+   - Implement the `new user add` event to register a user on the socket server.
+   - Emit the `get users` event to send the list of active users to the connected clients.
+   - Implement the `disconnect` event to handle users disconnecting from the server.
+
+4. **React Integration:**
+   - On the client side (React), install `socket.io-client`.
+   - Create a React component (e.g., `ChatApp`) to manage the chat interface.
+   - Use React state to handle messages and user input.
+   - Establish a connection to the Socket.IO server using the `io` library.
+   - Implement event listeners for receiving messages and handling user disconnections.
+   - Display the chat interface with React components.
+
+5. **Real-Time Messaging:**
+   - Implement sending and receiving messages in real-time.
+   - Use the `emit` function to send events from the client to the server.
+   - Use the `on` function to listen for events on the client side.
+   - Send and receive messages between users using Socket.IO.
+
+6. **Integration with MongoDB:**
+   - Store messages in MongoDB using an API endpoint (`add message`).
+   - Use `useEffect` to fetch and display messages from the database in real-time.
+   - Send and receive messages between users while updating the database.
+
+7. **Additional Features:**
+   - Extend the application to handle multiple users, real-time message updates, and user authentication.
+   - Implement functionalities such as user registration and handling disconnections.
+
+8. **Debugging and Corrections:**
+   - Debug the application for any errors or crashes.
+   - Correct typos or syntax errors found during the debugging process.
+
+9. **User Interface:**
+   - Design a chat box to display messages and handle user input.
+   - Implement features for sending and receiving messages in real-time.
+
+10. **Testing:**
+    - Test the application by sending and receiving messages.
+    - Ensure that the real-time functionality works seamlessly.
+
+These key points provide an overview of the steps involved in setting up a Socket.IO server, integrating it with a React application, and implementing real-time messaging with MongoDB integration.
+
+## explanation with code
+Certainly! Let's dive into the code:
+
+### Setting Up Socket.IO Server (`index.js` in the "socket" folder):
+
+```javascript
+// index.js
+
+const io = require('socket.io')(8800, {
+  cors: {
+    origin: 'http://localhost:3000', // React app's origin
+  },
+});
+
+const activeUsers = [];
+
+io.on('connection', (socket) => {
+  // Add a new user
+  socket.on('new user add', (newUserID) => {
+    if (!activeUsers.some((user) => user.userID === newUserID)) {
+      activeUsers.push({ userID: newUserID, socketID: socket.id });
+      io.emit('get users', activeUsers);
+    }
+  });
+
+  // Handle user disconnection
+  socket.on('disconnect', () => {
+    activeUsers = activeUsers.filter((user) => user.socketID !== socket.id);
+    io.emit('get users', activeUsers);
+    console.log('User disconnected');
+  });
+});
+
+// Start the server
+io.listen(8800, () => {
+  console.log('Socket.IO server running on port 8800');
+});
+```
+
+Explanation:
+- `socket.io` is initialized and configured to allow connections from the React app (running on `http://localhost:3000`).
+- An array `activeUsers` is used to keep track of users currently connected to the socket server.
+- When a new user connects (`connection` event), the server listens for a 'new user add' event from the client, checks if the user is not already in the `activeUsers` array, adds the user, and emits an updated list of users to all clients.
+- On user disconnection (`disconnect` event), the server removes the disconnected user from the `activeUsers` array and emits the updated list of users to all clients.
+
+### React Integration (`ChatApp.jsx`):
+
+```jsx
+// ChatApp.jsx
+
+import React, { useState, useEffect, useRef } from 'react';
+import io from 'socket.io-client';
+
+const ChatApp = () => {
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [sendMessage, setSendMessage] = useState('');
+  const socket = useRef(null);
+
+  useEffect(() => {
+    // Connect to Socket.IO server
+    socket.current = io('http://localhost:8800');
+
+    // Subscribe to the 'get users' event to update online users
+    socket.current.on('get users', (users) => {
+      setOnlineUsers(users);
+    });
+
+    // Cleanup on component unmount
+    return () => {
+      socket.current.disconnect();
+    };
+  }, []);
+
+  // Function to send a message
+  const handleSendMessage = () => {
+    // Assuming receiverUserID is known in your application
+    const receiverUserID = '123'; // Replace with the actual receiver's ID
+
+    // Emit the 'send message' event to the server
+    socket.current.emit('send message', {
+      senderID: '456', // Replace with the actual sender's ID
+      receiverID: receiverUserID,
+      text: sendMessage,
+    });
+
+    // Clear the message input
+    setSendMessage('');
+  };
+
+  return (
+    <div>
+      {/* Display online users */}
+      <div>Online Users: {onlineUsers.map((user) => user.userID).join(', ')}</div>
+
+      {/* Message input and send button */}
+      <input
+        type="text"
+        value={sendMessage}
+        onChange={(e) => setSendMessage(e.target.value)}
+      />
+      <button onClick={handleSendMessage}>Send Message</button>
+    </div>
+  );
+};
+
+export default ChatApp;
+```
+
+Explanation:
+- The `useEffect` hook is used to connect to the Socket.IO server when the component mounts. It subscribes to the 'get users' event to update the list of online users.
+- The `handleSendMessage` function emits a 'send message' event to the server with the sender's and receiver's IDs, along with the message text.
+- The `return` statement renders a simple UI with a list of online users and an input field to send messages.
+
+This code provides a basic structure for a chat application using Socket.IO, where users can connect, disconnect, and send messages in real-time. Adjustments may be needed based on the specific requirements of your application.
+
+Certainly! Let's continue explaining the remaining parts with code:
+
+### Scrolling to the Last Message Automatically:
+
+```jsx
+// ChatBox.jsx
+
+import React, { useEffect, useRef } from 'react';
+
+const ChatBox = ({ messages }) => {
+  const scroll = useRef();
+
+  // Always scroll to the last message
+  useEffect(() => {
+    if (scroll.current) {
+      scroll.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
+  return (
+    <div>
+      {messages.map((message) => (
+        <div key={message.id}>{message.text}</div>
+      ))}
+      <div ref={scroll}></div>
+    </div>
+  );
+};
+
+export default ChatBox;
+```
+
+Explanation:
+- A `useRef` named `scroll` is created to reference an empty `div` element at the end of the message list.
+- An `useEffect` hook is used to scroll to the last message whenever the `messages` array changes. It uses `scrollIntoView` for a smooth scrolling effect.
+
+### Handling Online Status:
+
+```jsx
+// Chat.jsx
+
+import React, { useState, useEffect, useRef } from 'react';
+import io from 'socket.io-client';
+import ChatBox from './ChatBox';
+
+const Chat = ({ user }) => {
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const socket = useRef(null);
+
+  useEffect(() => {
+    socket.current = io('http://localhost:8800');
+
+    // Subscribe to 'get users' event to update online users
+    socket.current.on('get users', (users) => {
+      setOnlineUsers(users);
+    });
+
+    // Cleanup on component unmount
+    return () => {
+      socket.current.disconnect();
+    };
+  }, []);
+
+  const checkOnlineStatus = (chat) => {
+    const otherMember = chat.members.find((member) => member !== user.id);
+    return onlineUsers.some((user) => user.userID === otherMember);
+  };
+
+  return (
+    <div>
+      {/* Iterate over chats and display ChatBox */}
+      {chats.map((chat) => (
+        <div key={chat.id}>
+          <ChatBox messages={chat.messages} />
+          <div>
+            {checkOnlineStatus(chat) ? 'Online' : 'Offline'}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default Chat;
+```
+
+Explanation:
+- The `checkOnlineStatus` function checks if the other member of a chat is present in the `onlineUsers` array, determining their online status.
+- The online status is then displayed below each `ChatBox`.
+
+### Emoji Support:
+
+To add Emoji support, you can use libraries like [emoji-mart](https://github.com/missive/emoji-mart) or [react-emoji](https://www.npmjs.com/package/react-emoji). Here's a simple example using `react-emoji`:
+
+1. Install the library:
+
+   ```bash
+   npm install react-emoji
+   ```
+
+2. Use it in your code:
+
+   ```jsx
+   // ChatBox.jsx
+
+   import React, { useEffect, useRef } from 'react';
+   import { Emoji } from 'react-emoji-render';
+
+   const ChatBox = ({ messages }) => {
+     const scroll = useRef();
+
+     useEffect(() => {
+       if (scroll.current) {
+         scroll.current.scrollIntoView({ behavior: 'smooth' });
+       }
+     }, [messages]);
+
+     return (
+       <div>
+         {messages.map((message) => (
+           <div key={message.id}>
+             <Emoji text={message.text} />
+           </div>
+         ))}
+         <div ref={scroll}></div>
+       </div>
+     );
+   };
+
+   export default ChatBox;
+   ```
+
+   Explanation:
+   - `react-emoji` is used to render Emoji in messages.
+   - The `Emoji` component is used to render the text with Emoji.
+
+This should cover the remaining functionalities of scrolling to the last message, handling online status, and adding Emoji support to your chat application.
+</details>
+
+
+<details>
+  <summary>Online Status </summary>
+
+1. **Automatic Scrolling in Chat Box**
+   - Utilized `useRef` for scrolling reference.
+   - Implemented a `useEffect` to scroll to the last message.
+   - Dependency array includes the `messages` variable.
+   - Verified functionality with text and emoji messages.
+
+2. **Handling Online Status**
+   - Identified the issue with hardcoded online status.
+   - Implemented a function `checkOnlineStatus(chat)` to dynamically check online status.
+   - Extracted the other chat member excluding the currently logged-in user.
+   - Utilized the `find` and `includes` functions to determine online status.
+   - Integrated the online status function in the `Conversation` component.
+   - Updated the logic for conditional rendering of online status.
+
+3. **Rendering Online Status in Conversation**
+   - Adjusted the logic to display "Online" or "Offline" based on the `online` prop.
+   - Resolved errors related to import statements and rendering conditions.
+   - Tested online status functionality with different user logins.
+
+4. **Conclusion and Outro**
+   - Declared completion of chat application functionalities.
+   - Encouraged viewers to like, subscribe, and share the tutorial.
+   - Invited viewers to share thoughts in the comments.
+   - Ended with a goodbye message and anticipation for more tutorials.
+
+</details>
