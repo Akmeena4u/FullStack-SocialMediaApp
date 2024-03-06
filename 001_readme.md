@@ -1627,3 +1627,55 @@ The application is built using the following technologies:
 
 This set of notes covers the implementation of the REST API for a chat application, including models, routes, controllers, and server setup.
 </details>
+
+<details>
+  <summary>Frontend of Chat-App</summary>
+
+1. **Frontend Setup:**
+   - Created a chat.jsx file for the chat page on the client side.
+   - Configured routing in app.js to navigate to the chat page if the user is authenticated.
+   - Styled the chat page using a separate chat.css file.
+
+2. **Chat Page Components:**
+   - Created components such as chat.jsx, conversation.jsx, and chat box.jsx.
+   - Implemented the left side with chat list and conversation headers.
+   - Fetched user data and chats from Redux store and MongoDB.
+   - Styled the chat page using basic styling.
+
+3. **Conversation Component:**
+   - Created a conversation component to display chat headers.
+   - Fetched user data for the other participant in the chat.
+   - Styled the conversation component.
+
+4. **Chat Box Component:**
+   - Created a chat box component to display the chat header, messages, and input.
+   - Used useEffect to fetch user data for the chat header.
+   - Implemented fetching messages and displaying them in the chat body.
+   - Used the react-input-emoji library for the input field with emoji support.
+
+5. **Message Styling:**
+   - Differentiated between the sender's messages and others' messages.
+   - Used the time ago.js library to display the time difference for each message.
+
+6. **Socket.IO Implementation:**
+   - Planned to implement Socket.IO for real-time messaging.
+   - Used an external library for emoji support in the input field.
+
+7. **Chat Box Interaction:**
+   - Set up a condition to render content based on whether a chat is selected.
+   - Displayed a message prompting the user to select a chat if none is selected.
+
+8. **Additional Components:**
+   - Added a send button for sending messages in the chat box.
+
+9. **Styling:**
+   - Applied basic styling to components using class names.
+
+10. **Dependencies:**
+   - Installed external dependencies like react-input-emoji and time ago.js for specific functionality.
+
+11. **Notes:**
+   - The tutorial provided a comprehensive overview of building a chat application's frontend, focusing on React, Redux, and MongoDB integration.
+   - Socket.IO integration and real-time functionality were mentioned for future implementation.
+
+</details>
